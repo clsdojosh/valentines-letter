@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #ffe6eb, #fff5f7);
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+}
+
+/* Envelope Container */
+.envelope-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+/* Envelope */
+.envelope {
+    width: 320px;
+    height: 220px;
+    background: #ffccd5;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    transition: transform 0.6s ease;
+}
+
+/* Flap */
+.flap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #ffb3c1;
+    clip-path: polygon(0 0, 50% 55%, 100% 0);
+    transform-origin: top;
+    transition: transform 0.6s ease;
+    border-radius: 8px 8px 0 0;
+}
+
+/* Letter */
+.letter {
+    position: absolute;
+    width: 280px;
+    height: 180px;
+    background: white;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, 40%);
+    border-radius: 6px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: 0.8s ease;
+    opacity: 0;
+}
+
+.letter h2 {
+    margin-top: 0;
+}
+
+/* Photos */
+.photo {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: 0.8s ease;
+}
+
+/* Scatter Positions */
+.open .photo:nth-child(1) {
+    left: -160px;
+    top: -40px;
+    transform: rotate(-15deg);
+    opacity: 1;
+}
+
+.open .photo:nth-child(2) {
+    right: -160px;
+    top: -40px;
+    transform: rotate(15deg);
+    opacity: 1;
+}
+
+.open .photo:nth-child(3) {
+    left: -140px;
+    bottom: -40px;
+    transform: rotate(10deg);
+    opacity: 1;
+}
+
+.open .photo:nth-child(4) {
+    right: -140px;
+    bottom: -40px;
+    transform: rotate(-10deg);
+    opacity: 1;
+}
+
+/* Open State */
+.open .flap {
+    transform: rotateX(180deg);
+}
+
+.open .letter {
+    transform: translate(-50%, -80%);
+    opacity: 1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="envelope-wrapper" onclick="openEnvelope(this)">
+
+    <!-- Photos -->
+    <img src="photo1.jpg" class="photo">
+    <img src="photo2.jpg" class="photo">
+    <img src="photo3.jpg" class="photo">
+    <img src="photo4.jpg" class="photo">
+
+    <div class="envelope">
+        <div class="flap"></div>
+
+        <div class="letter">
+            <h2>My Love ❤️</h2>
+            <p>
+                Happy Valentine’s Day.  
+                Thank you for being my happiness, my comfort, and my best friend.  
+                Every moment with you is something I treasure deeply.  
+            </p>
+            <p>
+                I love you always.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function openEnvelope(el){
+    el.classList.toggle("open");
+}
+</script>
+
+</body>
+</html>
