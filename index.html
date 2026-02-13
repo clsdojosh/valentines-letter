@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For the special person in my life</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --night-bg: #02020a;
+            --tulip-glow: rgba(140, 200, 255, 0.4);
+            --petal-bright: #b3e5fc;
+            --petal-dark: #1a237e;
+            --stem-glow: #1e88e5; 
+            --stem-color: #052205; 
+            --leaf-color: #0a2d2d;
+            --mist-color: rgba(100, 180, 255, 0.03);
+            
+            --env-base: #101a2d;
+            --env-highlight: #1c2e4a;
+            --letter-paper: #fdfcf8;
+            --ink-color: #1a237e;
+            --env-border: rgba(255, 255, 255, 0.15); 
+            --shoulder-lining: rgba(255, 255, 255, 0.45);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            font-family: 'Cinzel', serif;
+            cursor: pointer;
+        }
+
+        #entry-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            pointer-events: none;
+            transition: opacity 3s ease-in-out;
+        }
+
+        .garden-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            display: flex;
+            align-items: flex-end;
+            background: radial-gradient(circle at center bottom, #0a192f 0%, #020205 100%);
+            opacity: 0;
+            transition: opacity 3s ease-in-out;
+        }
+
+        .stars-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: var(--star-opacity);
+        }
+
+        .firefly {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fdfd96;
+            border-radius: 50%;
+            filter: blur(1px) drop-shadow(0 0 5px #fdfd96);
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            animation: fly var(--fly-time) infinite ease-in-out, glow 3s infinite ease-in-out;
+        }
+
+        @keyframes fly {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(20px, -30px); }
+            50% { transform: translate(-10px, -50px); }
+            75% { transform: translate(-30px, -20px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        @keyframes glow {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.8; }
+        }
+
+        .mist-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            filter: blur(40px);
+        }
+
+        .mist-layer {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, var(--mist-color) 0%, transparent 70%);
+            animation: mistDrift var(--duration) linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes mistDrift {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0%); }
+        }
+
+        .flower-plot {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            perspective: 2000px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .tulip {
+            position: absolute;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: bottom center; 
+            animation: sway var(--sway-dur) ease-in-out infinite;
+            transition: opacity 1s ease;
+        }
+
+        .grass-blade {
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(to top, transparent 0%, transparent 15%, #000505 40%, #0d2e2e 100%);
+            border-radius: 50% 50% 0 0;
+            transform-origin: bottom center;
+            animation: grassSway 6s ease-in-out infinite;
+        }
+
+        @keyframes grassSway {
+            0%, 100% { transform: translateZ(var(--z)) rotate(calc(var(--rot) - 2.5deg)); }
+            50% { transform: translateZ(var(--z)) rotate(calc(var(--rot) + 2.5deg)); }
+        }
+
+        .flower-head {
+            position: relative;
+            width: 50px;
+            height: 75px;
+            animation: bloom 6s ease-in-out infinite alternate;
+            transform-style: preserve-3d;
+        }
+
+        .petal {
+            position: absolute;
+            bottom: 0;
+            width: 38px;
+            height: 68px;
+            background: linear-gradient(to top, var(--p-color, var(--petal-bright)), #3949ab);
+            border-radius: 50% 50% 50% 50% / 70% 80% 30% 20%;
+            filter: drop-shadow(0 0 15px var(--tulip-glow));
+            opacity: 0.85;
+        }
+
+        .petal-left { left: -12px; transform: rotate(-18deg); z-index: 1; }
+        .petal-right { right: -12px; transform: rotate(18deg); z-index: 1; }
+        .petal-center { 
+            left: 6px; 
+            height: 72px; 
+            z-index: 3; 
+            background: #1a237e;
+            clip-path: ellipse(42% 50% at 50% 50%);
+            filter: brightness(1.1) drop-shadow(0 0 8px var(--p-color, var(--petal-bright)));
+        }
+        
+        .stem-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .stem {
+            width: var(--stem-w, 2px);
+            background: linear-gradient(to bottom, var(--stem-glow), var(--stem-color) 40%, #000 70%, transparent 95%);
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(30, 136, 229, 0.1);
+        }
+
+        .leaf {
+            position: absolute;
+            width: var(--lw, 18px);
+            height: var(--lh, 45px);
+            background: linear-gradient(to top, var(--leaf-color) 0%, transparent 100%);
+            border-radius: 0 100% 0 100%;
+            filter: drop-shadow(0 0 5px rgba(30, 136, 229, 0.1));
+            transform-origin: bottom center;
+            opacity: 0.45;
+        }
+
+        .leaf-left {
+            left: calc(var(--lw) * -0.7);
+            bottom: var(--lb, 20%);
+            transform: rotate(var(--lr, -35deg)) scaleX(-1);
+        }
+
+        .leaf-right {
+            right: calc(var(--lw) * -0.7);
+            bottom: var(--rb, 35%);
+            transform: rotate(var(--rr, 35deg));
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: translateZ(var(--tz)) rotate(calc(var(--base-rotation) - 2.2deg)); }
+            50% { transform: translateZ(var(--tz)) rotate(calc(var(--base-rotation) + 2.2deg)); }
+        }
+
+        @keyframes bloom {
+            0% { transform: scale(0.98) rotateY(-3deg); }
+            100% { transform: scale(1.02) rotateY(3deg); }
+        }
+
+        .wrapper {
+            position: relative;
+            width: 340px;
+            height: 230px;
+            cursor: pointer;
+            perspective: 1500px;
+            z-index: 500;
+            transition: opacity 1.5s ease, transform 1.5s ease;
+        }
+
+        .wrapper.initial-hidden {
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            pointer-events: none;
+        }
+
+        .texture-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.15;
+            mix-blend-mode: multiply;
+            background-image: url('https://www.transparenttextures.com/patterns/linen-design.png');
+        }
+
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--env-base);
+            border-radius: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(0,0,0,0.3);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .front-panel {
+            position: absolute;
+            background: var(--env-highlight);
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        .envelope-front-bottom {
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(0 100%, 100% 100%, 100% 54%, 0 54%);
+            z-index: 10; 
+            border-radius: 0 0 10px 10px;
+            pointer-events: none;
+            border-top: 1.5px solid var(--shoulder-lining);
+        }
+
+        .shoulder-left {
+            top: 0;
+            left: 0;
+            width: 51%;
+            height: 100%;
+            clip-path: polygon(0 0, 100% 56%, 0 56%);
+            z-index: 9;
+            border-radius: 10px 0 0 0;
+            border-top: 1.8px solid var(--shoulder-lining);
+        }
+
+        .shoulder-right {
+            top: 0;
+            right: 0;
+            width: 51%;
+            height: 100%;
+            clip-path: polygon(100% 0, 100% 56%, 0 56%);
+            z-index: 9;
+            border-radius: 0 10px 0 0;
+            border-top: 1.8px solid var(--shoulder-lining);
+        }
+
+        .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--env-highlight);
+            clip-path: polygon(0 0, 100% 0, 50% 55%);
+            transform-origin: top;
+            transition: 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 11;
+            border-radius: 10px;
+            border-left: 1.5px solid var(--shoulder-lining);
+            border-right: 1.5px solid var(--shoulder-lining);
+            border-bottom: 1.5px solid var(--shoulder-lining);
+        }
+
+        .open .flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+
+        .seal {
+            position: absolute;
+            width: 70px; /* Slightly larger for custom local images */
+            height: 70px;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -10%);
+            z-index: 12;
+            transition: 0.8s ease-in-out;
+            object-fit: contain;
+            pointer-events: none;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+        }
+
+        .open .seal {
+            opacity: 0;
+            transform: translate(-50%, -10%) scale(1.6);
+        }
+
+        .polaroid {
+            position: absolute;
+            width: 140px;
+            background: white;
+            padding: 8px 8px 32px 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            z-index: 5; 
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -40%) scale(0.2); 
+            opacity: 0;
+            pointer-events: none;
+            will-change: transform, opacity;
+            border: 1px solid #eee;
+        }
+        
+        .polaroid img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .open .polaroid {
+            z-index: 3000;
+        }
+
+        .open .pol-1 { animation: pullAndFlow1 7s forwards cubic-bezier(0.19, 1, 0.22, 1) 1.2s, drift1 10s infinite alternate ease-in-out 8.2s; }
+        .open .pol-2 { animation: pullAndFlow2 7.2s forwards cubic-bezier(0.19, 1, 0.22, 1) 1.3s, drift2 11s infinite alternate ease-in-out 8.5s; }
+        .open .pol-3 { animation: pullAndFlow3 7.4s forwards cubic-bezier(0.19, 1, 0.22, 1) 1.4s, drift3 9s infinite alternate ease-in-out 8.8s; }
+        .open .pol-4 { animation: pullAndFlow4 7.6s forwards cubic-bezier(0.19, 1, 0.22, 1) 1.5s, drift4 12s infinite alternate ease-in-out 9.1s; }
+
+        @keyframes pullAndFlow1 {
+            0% { transform: translate(-50%, -40%) scale(0.2) rotate(0deg); opacity: 0; }
+            15% { transform: translate(-50%, -150%) scale(0.7) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-440px, -35vh) scale(1) rotate(-8deg); opacity: 1; }
+        }
+        @keyframes pullAndFlow2 {
+            0% { transform: translate(-50%, -40%) scale(0.2) rotate(0deg); opacity: 0; }
+            15% { transform: translate(-50%, -150%) scale(0.7) rotate(0deg); opacity: 1; }
+            100% { transform: translate(300px, -40vh) scale(1) rotate(12deg); opacity: 1; }
+        }
+        @keyframes pullAndFlow3 {
+            0% { transform: translate(-50%, -40%) scale(0.2) rotate(0deg); opacity: 0; }
+            15% { transform: translate(-50%, -150%) scale(0.7) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-420px, 25vh) scale(1) rotate(-5deg); opacity: 1; }
+        }
+        @keyframes pullAndFlow4 {
+            0% { transform: translate(-50%, -40%) scale(0.2) rotate(0deg); opacity: 0; }
+            15% { transform: translate(-50%, -150%) scale(0.7) rotate(0deg); opacity: 1; }
+            100% { transform: translate(280px, 30vh) scale(1) rotate(10deg); opacity: 1; }
+        }
+
+        @keyframes drift1 { 
+            0% { transform: translate(-440px, -35vh) scale(1) rotate(-8deg); }
+            100% { transform: translate(-445px, -36vh) scale(1.02) rotate(-9deg); }
+        }
+        @keyframes drift2 { 
+            0% { transform: translate(300px, -40vh) scale(1) rotate(12deg); }
+            100% { transform: translate(305px, -39vh) scale(1.01) rotate(13deg); }
+        }
+        @keyframes drift3 { 
+            0% { transform: translate(-420px, 25vh) scale(1) rotate(-5deg); }
+            100% { transform: translate(-418px, 26vh) scale(1.03) rotate(-6deg); }
+        }
+        @keyframes drift4 { 
+            0% { transform: translate(280px, 30vh) scale(1) rotate(10deg); }
+            100% { transform: translate(278px, 29vh) scale(1.02) rotate(11deg); }
+        }
+
+        .letter-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -40%) scale(0.85); 
+            width: 300px;
+            height: 180px; 
+            z-index: 2;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+            transform-style: preserve-3d;
+        }
+
+        .open .letter-container {
+            opacity: 1;
+            pointer-events: auto;
+            animation: pullDropExpand 5.5s forwards cubic-bezier(0.4, 0, 0.2, 1) 1.2s;
+        }
+
+        @keyframes pullDropExpand {
+            0% { transform: translate(-50%, -40%) scale(0.85); width: 300px; height: 180px; z-index: 2; }
+            35% { transform: translate(-50%, -160%) scale(0.85); width: 300px; height: 180px; z-index: 2; }
+            45% { transform: translate(-50%, -160%) scale(0.85); width: 300px; height: 180px; z-index: 3000; }
+            70% { transform: translate(-50%, -50%) scale(0.85); width: 300px; height: 180px; z-index: 3000; }
+            100% { transform: translate(-50%, -50%) scale(1); width: 620px; height: 680px; max-width: 92vw; max-height: 85vh; z-index: 3000; }
+        }
+
+        .letter-paper {
+            width: 100%;
+            height: 100%;
+            background: var(--letter-paper);
+            background-image: 
+                radial-gradient(circle at center, rgba(140, 200, 255, 0.05) 0%, transparent 70%),
+                url('https://www.transparenttextures.com/patterns/parchment.png');
+            box-shadow: 0 10px 60px rgba(0,0,0,0.3);
+            padding: 35px 50px; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border-radius: 2px;
+            scrollbar-width: none;
+            clip-path: polygon(
+                0% 0.5%, 2% 0%, 4% 0.3%, 6% 0.1%, 8% 0.4%, 10% 0%, 12% 0.2%, 14% 0%, 16% 0.3%, 18% 0.1%, 20% 0.4%, 22% 0%, 24% 0.2%, 26% 0%, 28% 0.3%, 30% 0.1%, 32% 0.4%, 34% 0%, 36% 0.2%, 38% 0%, 40% 0.3%, 42% 0.1%, 44% 0.4%, 46% 0%, 48% 0.2%, 50% 0%, 52% 0.3%, 54% 0.1%, 56% 0.4%, 58% 0%, 60% 0.2%, 62% 0%, 64% 0.3%, 66% 0.1%, 68% 0.4%, 70% 0%, 72% 0.2%, 74% 0%, 76% 0.3%, 78% 0.1%, 80% 0.4%, 82% 0%, 84% 0.2%, 86% 0%, 88% 0.3%, 90% 0.1%, 92% 0.4%, 94% 0%, 96% 0.2%, 98% 0%, 100% 0.5%,
+                99.5% 2%, 100% 4%, 99.7% 6%, 100% 8%, 99.6% 10%, 100% 12%, 99.8% 14%, 100% 16%, 99.7% 18%, 100% 20%, 99.6% 22%, 100% 24%, 99.8% 26%, 100% 28%, 99.7% 30%, 100% 32%, 99.6% 34%, 100% 36%, 99.8% 38%, 100% 40%, 99.7% 42%, 100% 44%, 99.6% 46%, 100% 48%, 99.8% 50%, 100% 52%, 99.7% 54%, 100% 56%, 99.6% 58%, 100% 60%, 99.8% 62%, 100% 64%, 99.7% 66%, 100% 68%, 99.6% 70%, 100% 72%, 99.8% 74%, 100% 76%, 99.7% 78%, 100% 80%, 99.6% 82%, 100% 84%, 99.8% 86%, 100% 88%, 99.7% 90%, 100% 92%, 99.6% 94%, 100% 96%, 99.8% 98%, 100% 100%,
+                98% 99.5%, 96% 100%, 94% 99.7%, 92% 100%, 90% 99.6%, 88% 100%, 86% 99.8%, 84% 100%, 82% 99.7%, 80% 100%, 78% 99.6%, 76% 100%, 74% 99.8%, 72% 100%, 70% 99.7%, 68% 100%, 66% 99.6%, 64% 100%, 62% 99.8%, 60% 100%, 58% 99.7%, 56% 100%, 54% 99.6%, 52% 100%, 50% 99.8%, 48% 100%, 46% 99.7%, 44% 100%, 42% 99.6%, 40% 100%, 38% 99.8%, 36% 100%, 34% 99.7%, 32% 100%, 30% 99.6%, 28% 100%, 26% 99.8%, 24% 100%, 22% 99.7%, 20% 100%, 18% 99.6%, 16% 100%, 14% 99.8%, 12% 100%, 10% 99.7%, 8% 100%, 6% 99.6%, 4% 100%, 2% 99.8%, 0% 100%,
+                0.5% 98%, 0% 96%, 0.3% 94%, 0.1% 92%, 0.4% 90%, 0% 88%, 0.2% 86%, 0% 84%, 0.3% 82%, 0.1% 80%, 0.4% 78%, 0% 76%, 0.2% 74%, 0% 72%, 0.3% 70%, 0.1% 68%, 0.4% 66%, 0% 64%, 0.2% 62%, 0% 60%, 0.3% 58%, 0.1% 56%, 0.4% 54%, 0% 52%, 0.2% 50%, 0% 48%, 0.3% 46%, 0.1% 44%, 0.4% 42%, 0% 40%, 0.2% 38%, 0% 36%, 0.3% 34%, 0.1% 32%, 0.4% 30%, 0% 28%, 0.2% 26%, 0% 24%, 0.3% 22%, 0.1% 20%, 0.4% 18%, 0% 16%, 0.2% 14%, 0% 12%, 0.3% 10%, 0.1% 8%, 0.4% 6%, 0% 4%, 0.2% 2%, 0% 0%
+            );
+        }
+        .letter-paper::-webkit-scrollbar { display: none; }
+
+        .letter h2 {
+            margin-top: 0;
+            color: var(--ink-color); 
+            font-family: 'Great Vibes', cursive;
+            font-weight: 400;
+            font-size: 56px;
+            text-align: center;
+            border-bottom: 1px double rgba(26, 35, 126, 0.15);
+            padding-bottom: 10px; 
+            margin-bottom: 25px; 
+            opacity: 0;
+            transition: opacity 1.2s ease 6s; 
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+        }
+
+        .letter-content {
+            color: #2c3e50;
+            font-family: 'EB Garamond', serif;
+            font-size: 21px;
+            line-height: 1.7;
+            width: 100%; 
+            margin: 0 auto;
+            opacity: 0;
+            transition: opacity 1.2s ease 6.5s;
+            text-align: justify;
+        }
+
+        .letter-content p {
+            margin-bottom: 1.2em;
+            text-indent: 0;
+        }
+
+        .letter-content p:first-of-type::first-letter {
+            float: left;
+            font-family: 'Great Vibes', cursive;
+            font-size: 70px; 
+            line-height: 55px;
+            padding-top: 4px;
+            padding-right: 10px;
+            padding-left: 2px;
+            color: var(--ink-color);
+        }
+
+        .open .letter h2,
+        .open .letter-content {
+            opacity: 1;
+        }
+
+        .letter-footer {
+            margin-top: 40px;
+            text-align: right;
+            padding-right: 20px;
+            font-family: 'Great Vibes', cursive;
+            font-size: 34px;
+            color: var(--ink-color);
+            line-height: 1.2;
+        }
+
+        #reveal-hint {
+            position: fixed;
+            top: 25%; 
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(179, 229, 252, 0.6); 
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            transition: opacity 1.5s ease;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0; 
+            text-align: center;
+            width: 100%;
+            text-shadow: 0 0 15px rgba(179, 229, 252, 0.8);
+        }
+
+        .watermark {
+            position: absolute;
+            bottom: 50px;
+            right: 50px;
+            width: 150px;
+            height: 150px;
+            opacity: 0.03;
+            pointer-events: none;
+            filter: grayscale(1);
+        }
+    </style>
+</head>
+<body id="main-body">
+
+<div id="entry-overlay"></div>
+
+<audio id="bg-music" loop>
+    <source src="your-song.mp3" type="audio/mpeg">
+</audio>
+
+<div class="garden-container" id="garden">
+    <div class="stars-container" id="stars"></div>
+    <div class="mist-container" id="mist">
+        <div class="mist-layer" style="--duration: 60s; top: 0;"></div>
+        <div class="mist-layer" style="--duration: 45s; top: 50px; opacity: 0.5;"></div>
+    </div>
+    <div class="flower-plot" id="plot"></div>
+</div>
+
+<div id="reveal-hint">Even the beautiful moonlit tulips pales at the promise of your touch</div>
+
+<div class="wrapper initial-hidden" id="wrap">
+    <div class="envelope-back">
+        <div class="texture-overlay"></div>
+    </div>
+    
+    <div class="polaroid pol-1" id="pol-1"><img></div>
+    <div class="polaroid pol-2" id="pol-2"><img></div>
+    <div class="polaroid pol-3" id="pol-3"><img></div>
+    <div class="polaroid pol-4" id="pol-4"><img></div>
+
+    <div class="letter-container" id="letter">
+        <div class="letter-paper letter">
+            <svg class="watermark" viewBox="0 0 100 100">
+                <path fill="#000" d="M50 10 C30 10 20 40 50 90 C80 40 70 10 50 10" />
+            </svg>
+
+            <h2>Happy Valentine's Mahal!</h2>
+            <div class="letter-content">
+                <p>I know it is not much, but I really poured my all in this and not will a year go by na hindi kita mabibigyan ng tulips. So take this as an IOU and a pinky promise that I will give you the best of what I have in every state of my life. I will always give you my everything even if I have nothing.</p>
+                
+                <p>Even in my downs you still chose to stay beside me and nothing will ever stop me from saying this, I am really really grateful sa support and care na binibigay mo sakin. Your love is the greatest thing that I own and I also promise you that I will take care of it for the remainder of my being. Thank you mahal for everything, for your existence. You never fail to be the most loving, caring and understanding person in my life even if I often look down on myself.</p>
+                
+                <p>Also, as I keep saying this to you, do not be too hard on yourself. You are growing, you are learning, it is hard but give yourself credit for the achievements you have done. You are amazing, you are talented and smart. I see your efforts and I am proud of you.</p>
+                
+                <p>As the wind and the flowers cause each other to move, I too will be there for you to help you, and see you grow to the amazing woman that you are. Malapit na ulit kita makita, I am really really excited na. Off all those months na absent ako sa tabi mo I will make it up soon, I miss having you by my side even though I don’t express it much pero sobra sobra ko na talaga kita namimiss not just physically but also being in the moment with you, I want to make more memories with you. I want to always be with you, be your bumbum, be your greatest cheerer, be your hubby.</p>
+                
+                <p>I love you so much mahal.</p>
+                
+                <div class="letter-footer">
+                    From the moon and stars with love, <br> Bumbum 💙
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="shoulder-left front-panel"><div class="texture-overlay"></div></div>
+    <div class="shoulder-right front-panel"><div class="texture-overlay"></div></div>
+    <div class="envelope-front-bottom front-panel"><div class="texture-overlay"></div></div>
+    
+    <div class="flap"><div class="texture-overlay"></div></div>
+
+    <!-- CHANGE "seal.png" TO YOUR LOCAL FILENAME (e.g., "my-seal.jpg") -->
+    <img src="seal.png" class="seal" id="seal-img" alt="Envelope Seal">
+</div>
+
+<script>
+    const POLAROID_IMAGES = [
+        "photos1.png", 
+        "photos2.png", 
+        "photos3.png", 
+        "photos4.png"
+    ];
+
+    const plot = document.getElementById('plot');
+    const starsContainer = document.getElementById('stars');
+    const garden = document.getElementById('garden');
+    const wrap = document.getElementById("wrap");
+    const letter = document.getElementById("letter");
+    const music = document.getElementById('bg-music');
+    const hint = document.getElementById('reveal-hint');
+    const body = document.getElementById('main-body');
+    const entryOverlay = document.getElementById('entry-overlay');
+
+    let isRevealed = false;
+    let isOpened = false;
+
+    function buildGarden() {
+        for (let i = 0; i < 120; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 1.5;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.setProperty('--star-opacity', 0.05 + Math.random() * 0.3);
+            starsContainer.appendChild(star);
+        }
+
+        for (let i = 0; i < 25; i++) {
+            const firefly = document.createElement('div');
+            firefly.className = 'firefly';
+            firefly.style.left = Math.random() * 100 + '%';
+            firefly.style.top = (40 + Math.random() * 50) + '%';
+            firefly.style.setProperty('--fly-time', (15 + Math.random() * 20) + 's');
+            firefly.style.animationDelay = (Math.random() * 10) + 's';
+            garden.appendChild(firefly);
+        }
+
+        for (let i = 0; i < 180; i++) {
+            const blade = document.createElement('div');
+            blade.className = 'grass-blade';
+            const z = (Math.random() * 1000) - 500;
+            blade.style.width = (1.5 + Math.random() * 1.5) + 'px';
+            blade.style.height = (35 + Math.random() * 40) + 'px';
+            blade.style.left = Math.random() * 100 + '%';
+            blade.style.setProperty('--z', z + 'px');
+            blade.style.setProperty('--rot', ((Math.random()-0.5)*60) + 'deg');
+            blade.style.zIndex = Math.floor(z + 1000);
+            blade.style.animationDelay = (Math.random() * -6) + 's';
+            plot.appendChild(blade);
+        }
+
+        const tulipCount = 28;
+        const colors = ['#e3f2fd', '#bbdefb', '#c5cae9', '#d1c4e9', '#b3e5fc'];
+        
+        for (let i = 0; i < tulipCount; i++) {
+            const tulip = document.createElement('div');
+            tulip.className = 'tulip';
+            const xPos = (i * (100 / tulipCount)) + (Math.random() * 3);
+            const zDepth = (Math.random() * 1000) - 500;
+            const normZ = (zDepth + 500) / 1000; 
+            const scale = (0.4 + (normZ * 0.7)) * (0.8 + Math.random() * 0.4); 
+            const height = (140 + Math.random() * 220) * (0.6 + (normZ * 0.4));
+            const baseRot = (Math.random() - 0.5) * 12; 
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const swayDur = (7 + Math.random() * 5) + 's';
+
+            tulip.style.left = xPos + '%';
+            tulip.style.setProperty('--tz', zDepth + 'px');
+            tulip.style.setProperty('--base-rotation', baseRot + 'deg');
+            tulip.style.setProperty('--p-color', color);
+            tulip.style.setProperty('--sway-dur', swayDur);
+            tulip.style.animationDelay = (Math.random() * -10) + 's';
+            tulip.style.zIndex = Math.floor(zDepth + 1000);
+
+            tulip.innerHTML = `
+                <div class="flower-head" style="transform: scale(${scale});">
+                    <div class="petal petal-left"></div>
+                    <div class="petal petal-center"></div>
+                    <div class="petal petal-right"></div>
+                </div>
+                <div class="stem-container" style="--lw: 16px; --lh: 40px; --lb: 20%; --rb: 35%; --lr: -35deg; --rr: 35deg; --stem-w: ${1.5 + Math.random()*1.5}px">
+                    <div class="leaf leaf-left"></div>
+                    <div class="stem" style="height: ${height}px;"></div>
+                    <div class="leaf leaf-right"></div>
+                </div>
+            `;
+            plot.appendChild(tulip);
+        }
+    }
+
+    body.addEventListener('click', (e) => {
+        if (!isRevealed) {
+            isRevealed = true;
+            wrap.classList.remove('initial-hidden');
+            hint.style.opacity = '0';
+            music.play().catch(error => console.log("Audio play failed:", error));
+            return;
+        }
+
+        if (isOpened && !letter.contains(e.target)) {
+            wrap.classList.remove("open");
+            isOpened = false;
+            setTimeout(() => {
+                if (!isOpened) {
+                    isRevealed = false;
+                    wrap.classList.add('initial-hidden');
+                    hint.style.opacity = '1';
+                }
+            }, 1000);
+        }
+    });
+
+    wrap.addEventListener('click', (e) => {
+        if(isRevealed && !isOpened) {
+            wrap.classList.add("open");
+            isOpened = true;
+            e.stopPropagation();
+        }
+    });
+
+    window.onload = () => {
+        POLAROID_IMAGES.forEach((url, index) => {
+            const pol = document.getElementById(`pol-${index + 1}`);
+            if (pol) pol.querySelector('img').src = url;
+        });
+        buildGarden();
+
+        setTimeout(() => {
+            entryOverlay.style.opacity = '0';
+            garden.style.opacity = '1';
+            hint.style.opacity = '1';
+        }, 100);
+    };
+</script>
+
+</body>
+
+</html>
+
+
